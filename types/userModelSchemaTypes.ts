@@ -1,4 +1,5 @@
 export interface IUserSchema {
+  _id: string;
   name: string;
   email: {
     type: string;
@@ -9,4 +10,5 @@ export interface IUserSchema {
   };
   password: string;
   role: string;
+  comparePassword(candidatePassword: string): Promise<boolean>;
 }
