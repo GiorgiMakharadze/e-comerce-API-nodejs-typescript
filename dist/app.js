@@ -29,7 +29,7 @@ app.use(express_1.default.json());
 app.get("/", (req, res) => {
     res.send("e-comerce-api");
 });
-app.use("api/v1/auth", authRoutes_1.default);
+app.use("/api/v1/auth", authRoutes_1.default);
 //error handler middlewares
 app.use(not_found_1.notFound);
 app.use(error_handler_1.errorHandlerMiddleware);

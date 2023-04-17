@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authorizeRoles = exports.authenticateUser = void 0;
-const CustomError = require("../errors");
+const unauthenticated_1 = require("../errors/unauthenticated");
 const { isTokenValid } = require("../utils/jwt");
 const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let token;
@@ -24,7 +24,7 @@ const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         token = req.cookies.token;
     }
     if (!token) {
-        throw new CustomError.UnauthenticatedError("Authentication invalid");
+        throw new unauthenticated_1.UnauthenticatedError("Authentication invalid");
     }
     try {
         const payload = isTokenValid(token);
@@ -36,7 +36,7 @@ const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         next();
     }
     catch (error) {
-        throw new CustomError.UnauthenticatedError("Authentication invalid");
+        throw new unauthenticated_1.UnauthenticatedError("Authentication invalid");
     }
 });
 exports.authenticateUser = authenticateUser;
@@ -44,7 +44,7 @@ const authorizeRoles = (...roles) => {
     return (req, res, next) => {
         var _a;
         if (!((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) || !roles.includes(req.user.role)) {
-            throw new CustomError.UnauthorizedError("Unauthorized to access this route");
+            throw new unauthenticated_1.UnauthenticatedError("Unauthorized to access this route");
         }
         next();
     };

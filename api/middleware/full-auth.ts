@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
 import { RequestWithUser } from "../../types/authMiddlewareTypes";
-const CustomError = require("../errors");
+import { UnauthenticatedError } from "../errors/unauthenticated";
 const { isTokenValid } = require("../utils/jwt");
 
 export const authenticateUser = async (
@@ -20,7 +20,7 @@ export const authenticateUser = async (
   }
 
   if (!token) {
-    throw new CustomError.UnauthenticatedError("Authentication invalid");
+    throw new UnauthenticatedError("Authentication invalid");
   }
   try {
     const payload = isTokenValid(token);
@@ -33,16 +33,14 @@ export const authenticateUser = async (
 
     next();
   } catch (error) {
-    throw new CustomError.UnauthenticatedError("Authentication invalid");
+    throw new UnauthenticatedError("Authentication invalid");
   }
 };
 
 export const authorizeRoles = (...roles: string[]) => {
   return (req: RequestWithUser, res: Response, next: NextFunction) => {
     if (!req.user?.role || !roles.includes(req.user.role)) {
-      throw new CustomError.UnauthorizedError(
-        "Unauthorized to access this route"
-      );
+      throw new UnauthenticatedError("Unauthorized to access this route");
     }
     next();
   };

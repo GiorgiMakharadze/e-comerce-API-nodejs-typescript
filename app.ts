@@ -18,7 +18,8 @@ app.use(express.json());
 app.get("/", (req: Request, res: Response) => {
   res.send("e-comerce-api");
 });
-app.use("api/v1/auth", authRouter);
+
+app.use("/api/v1/auth", authRouter);
 
 //error handler middlewares
 app.use(notFound);
