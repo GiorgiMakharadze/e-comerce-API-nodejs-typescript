@@ -7,6 +7,7 @@ import { connectDB } from "./api/db/connect";
 import { notFound } from "./api/middleware/not-found";
 import { errorHandlerMiddleware } from "./api/middleware/error-handler";
 import authRouter from "./api/routes/authRoutes";
+import userRoutes from "./api/routes/userRoutes";
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -26,7 +27,8 @@ app.get("/api/v1", (req: Request, res: Response) => {
   res.send("e-comerce-api");
 });
 
-app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/auth", userRoutes);
+app.use("/api/v1/users", userRoutes);
 
 //error handler middlewares
 app.use(notFound);
