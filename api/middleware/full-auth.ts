@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import { RequestWithUser } from "../types/authMiddlewareTypes";
+import { RequestWithUser } from "../../types/authMiddlewareTypes";
 const CustomError = require("../errors");
 const { isTokenValid } = require("../utils/jwt");
 

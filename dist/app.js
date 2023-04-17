@@ -15,9 +15,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 require("dotenv/config");
 require("express-async-errors");
+const morgan_1 = __importDefault(require("morgan"));
 const connect_1 = require("./api/db/connect");
+const not_found_1 = require("./api/middleware/not-found");
+const error_handler_1 = require("./api/middleware/error-handler");
 const port = process.env.PORT || 5000;
 const app = (0, express_1.default)();
+//middlewares
+app.use((0, morgan_1.default)("dev"));
+app.use(express_1.default.json());
+//routes
+app.get("/", (req, res) => {
+    res.send("e-comerce-api");
+});
+//error handler middlewares
+app.use(not_found_1.notFound);
+app.use(error_handler_1.errorHandlerMiddleware);
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, connect_1.connectDB)(process.env.MONGO_URL);

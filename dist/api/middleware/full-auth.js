@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.authorizeRoles = exports.authenticateUser = void 0;
 const CustomError = require("../errors");
 const { isTokenValid } = require("../utils/jwt");
 const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -38,12 +39,14 @@ const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         throw new CustomError.UnauthenticatedError("Authentication invalid");
     }
 });
+exports.authenticateUser = authenticateUser;
 const authorizeRoles = (...roles) => {
     return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
+        var _a;
+        if (!((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) || !roles.includes(req.user.role)) {
             throw new CustomError.UnauthorizedError("Unauthorized to access this route");
         }
         next();
     };
 };
-module.exports = { authenticateUser, authorizeRoles };
+exports.authorizeRoles = authorizeRoles;
