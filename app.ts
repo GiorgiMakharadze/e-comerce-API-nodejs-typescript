@@ -27,7 +27,7 @@ app.get("/api/v1", (req: Request, res: Response) => {
   res.send("e-comerce-api");
 });
 
-app.use("/api/v1/auth", userRoutes);
+app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRoutes);
 
 //error handler middlewares
