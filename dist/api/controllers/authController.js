@@ -23,13 +23,13 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (emailAlreadyExists) {
         throw new bad_request_1.BadRequestError("Email already exists");
     }
-    //first refistered user is an admin
+    //first registered user is an admin
     const isFirstAccount = (yield User_1.default.countDocuments({})) === 0;
     const role = isFirstAccount ? "admin" : "user";
     const user = yield User_1.default.create({ name, email, password, role });
     const tokenUser = { name: user.name, userId: user._id, role: user.role };
-    const token = (0, utils_1.createJWT)({ payload: tokenUser });
-    res.status(http_status_codes_1.StatusCodes.CREATED).json({ user: tokenUser, token });
+    (0, utils_1.attachCookiesToResponse)({ res, user: tokenUser });
+    res.status(http_status_codes_1.StatusCodes.CREATED).json({ user: tokenUser });
 });
 exports.register = register;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

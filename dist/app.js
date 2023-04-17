@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 require("dotenv/config");
 require("express-async-errors");
 const morgan_1 = __importDefault(require("morgan"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const connect_1 = require("./api/db/connect");
 const not_found_1 = require("./api/middleware/not-found");
 const error_handler_1 = require("./api/middleware/error-handler");
@@ -25,8 +26,14 @@ const app = (0, express_1.default)();
 //middlewares
 app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.json());
+app.use((0, cookie_parser_1.default)(process.env.JWT_SECRET));
 //routes
 app.get("/", (req, res) => {
+    res.send("e-comerce-api");
+});
+//test route
+app.get("/api/v1", (req, res) => {
+    console.log(req.signedCookies);
     res.send("e-comerce-api");
 });
 app.use("/api/v1/auth", authRoutes_1.default);
