@@ -16,6 +16,7 @@ exports.logout = exports.login = exports.register = void 0;
 const http_status_codes_1 = require("http-status-codes");
 const User_1 = __importDefault(require("../models/User"));
 const bad_request_1 = require("../errors/bad-request");
+const utils_1 = require("../../utils");
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, name, password } = req.body;
     const emailAlreadyExists = yield User_1.default.findOne({ email });
@@ -26,7 +27,9 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isFirstAccount = (yield User_1.default.countDocuments({})) === 0;
     const role = isFirstAccount ? "admin" : "user";
     const user = yield User_1.default.create({ name, email, password, role });
-    res.status(http_status_codes_1.StatusCodes.CREATED).json({ user });
+    const tokenUser = { name: user.name, userId: user._id, role: user.role };
+    const token = (0, utils_1.createJWT)({ payload: tokenUser });
+    res.status(http_status_codes_1.StatusCodes.CREATED).json({ user: tokenUser, token });
 });
 exports.register = register;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

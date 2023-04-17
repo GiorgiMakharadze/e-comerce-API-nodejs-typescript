@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import validator from "validator";
+import bcrypt from "bcryptjs";
 import { IUserSchema } from "../../types/userModelSchemaTypes";
 
 const UserSchema = new Schema<IUserSchema>({
@@ -29,5 +30,17 @@ const UserSchema = new Schema<IUserSchema>({
     default: "user",
   },
 });
+
+UserSchema.pre("save", async function () {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+UserSchema.methods.comparePassword = async function (
+  canditatePassword: string
+) {
+  const isMatch = await bcrypt.compare(canditatePassword, this.password);
+  return isMatch;
+};
 
 export default mongoose.model<IUserSchema>("User", UserSchema);

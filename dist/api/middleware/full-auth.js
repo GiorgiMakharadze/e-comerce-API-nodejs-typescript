@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authorizeRoles = exports.authenticateUser = void 0;
-const unauthenticated_1 = require("../errors/unauthenticated");
-const { isTokenValid } = require("../utils/jwt");
+const errors_1 = require("../errors");
+const utils_1 = require("../../utils");
 const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let token;
     // check header
@@ -24,10 +24,13 @@ const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         token = req.cookies.token;
     }
     if (!token) {
-        throw new unauthenticated_1.UnauthenticatedError("Authentication invalid");
+        throw new errors_1.UnauthenticatedError("Authentication invalid");
     }
     try {
-        const payload = isTokenValid(token);
+        const payload = (0, utils_1.isTokenValid)(token);
+        if (typeof payload === "string") {
+            throw new errors_1.UnauthenticatedError(payload);
+        }
         // Attach the user and his permissions to the req object
         req.user = {
             userId: payload.user.userId,
@@ -36,7 +39,7 @@ const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         next();
     }
     catch (error) {
-        throw new unauthenticated_1.UnauthenticatedError("Authentication invalid");
+        throw new errors_1.UnauthenticatedError("Authentication invalid");
     }
 });
 exports.authenticateUser = authenticateUser;
@@ -44,7 +47,7 @@ const authorizeRoles = (...roles) => {
     return (req, res, next) => {
         var _a;
         if (!((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) || !roles.includes(req.user.role)) {
-            throw new unauthenticated_1.UnauthenticatedError("Unauthorized to access this route");
+            throw new errors_1.UnauthenticatedError("Unauthorized to access this route");
         }
         next();
     };

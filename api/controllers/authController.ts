@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import User from "../models/User";
 import { BadRequestError } from "../errors/bad-request";
+import { createJWT } from "../../utils";
 
 export const register = async (req: Request, res: Response) => {
   const { email, name, password } = req.body;
@@ -17,7 +18,10 @@ export const register = async (req: Request, res: Response) => {
 
   const user = await User.create({ name, email, password, role });
 
-  res.status(StatusCodes.CREATED).json({ user });
+  const tokenUser = { name: user.name, userId: user._id, role: user.role };
+  const token = createJWT({ payload: tokenUser });
+  
+  res.status(StatusCodes.CREATED).json({ user: tokenUser, token });
 };
 
 export const login = async (req: Request, res: Response) => {

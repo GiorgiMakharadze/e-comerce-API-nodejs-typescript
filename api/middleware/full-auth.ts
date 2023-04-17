@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import { RequestWithUser } from "../../types/authMiddlewareTypes";
-import { UnauthenticatedError } from "../errors/unauthenticated";
-const { isTokenValid } = require("../utils/jwt");
+import { UnauthenticatedError } from "../errors";
+import { isTokenValid } from "../../utils";
 
 export const authenticateUser = async (
   req: RequestWithUser,
@@ -24,6 +24,9 @@ export const authenticateUser = async (
   }
   try {
     const payload = isTokenValid(token);
+    if (typeof payload === "string") {
+      throw new UnauthenticatedError(payload);
+    }
 
     // Attach the user and his permissions to the req object
     req.user = {
