@@ -1,13 +1,8 @@
-import mongoose, { ConnectOptions } from "mongoose";
+import mongoose from "mongoose";
 
 export const connectDB = (url: string) => {
   return mongoose
-    .connect(url, {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
-      useUnifiedTopology: true,
-    } as ConnectOptions)
+    .connect(url)
     .then(() => console.log("Connected to MongoDb"))
     .catch((err) => console.log("Error connecting to MongoDB:", err.message));
 };

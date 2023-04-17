@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\""
   },
   "author": "",
   "license": "ISC",

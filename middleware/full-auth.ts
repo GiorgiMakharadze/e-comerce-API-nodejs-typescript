@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
+import { RequestWithUser } from "../types/authMiddlewareTypes";
 const CustomError = require("../errors");
 const { isTokenValid } = require("../utils/jwt");
 
-const authenticateUser = async (
-  req: Request,
+export const authenticateUser = async (
+  req: RequestWithUser,
   res: Response,
   next: NextFunction
 ) => {
@@ -36,9 +37,9 @@ const authenticateUser = async (
   }
 };
 
-const authorizeRoles = (...roles) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    if (!roles.includes(req.user.role)) {
+export const authorizeRoles = (...roles: string[]) => {
+  return (req: RequestWithUser, res: Response, next: NextFunction) => {
+    if (!req.user?.role || !roles.includes(req.user.role)) {
       throw new CustomError.UnauthorizedError(
         "Unauthorized to access this route"
       );
@@ -46,5 +47,3 @@ const authorizeRoles = (...roles) => {
     next();
   };
 };
-
-module.exports = { authenticateUser, authorizeRoles };
