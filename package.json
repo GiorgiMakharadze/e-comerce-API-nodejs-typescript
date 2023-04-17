@@ -32,6 +32,7 @@
     "@types/express": "^4.17.17",
     "@types/morgan": "^1.9.4",
     "@types/node": "^18.15.11",
+    "@types/validator": "^13.7.15",
     "nodemon": "^2.0.9",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
