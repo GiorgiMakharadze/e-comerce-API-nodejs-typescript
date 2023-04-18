@@ -6,11 +6,16 @@ import {
   updateUser,
   updateUserPassword,
 } from "../controllers/userController";
-import { authenticateUser } from "../middleware/authentication";
+import {
+  authenticateUser,
+  authorizePremmisions,
+} from "../middleware/authentication";
 
 const router = Router();
 
-router.route("/").get(authenticateUser, getAllUsers);
+router
+  .route("/")
+  .get(authenticateUser, authorizePremmisions("admin"), getAllUsers);
 
 router.route("/showMe").get(showCurrentUser);
 router.route("/updateUser").patch(updateUser);

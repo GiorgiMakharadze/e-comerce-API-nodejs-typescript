@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateUser = void 0;
+exports.authorizePremmisions = exports.authenticateUser = void 0;
 const utils_1 = require("../../utils");
 const errors_1 = require("../errors");
 const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -27,3 +27,23 @@ const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.authenticateUser = authenticateUser;
+const authorizePremmisions = (...roles) => {
+    return (req, res, next) => {
+        var _a, _b;
+        if (!((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) || !roles.includes((_b = req.user) === null || _b === void 0 ? void 0 : _b.role)) {
+            throw new errors_1.UnauthorizedError("Unauthorized to access this route");
+        }
+        next();
+    };
+};
+exports.authorizePremmisions = authorizePremmisions;
+// export const authorizePremmisions = (
+//   req: RequestWithUser,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   if (req.user?.role !== "admin") {
+//     throw new UnauthorizedError("Unauthorized to access this route");
+//   }
+//   next();
+// };
