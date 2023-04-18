@@ -15,27 +15,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.logout = exports.login = exports.register = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const http_status_codes_1 = require("http-status-codes");
-const bad_request_1 = require("../errors/bad-request");
 const utils_1 = require("../../utils");
 const errors_1 = require("../errors");
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, name, password } = req.body;
     const emailAlreadyExists = yield User_1.default.findOne({ email });
     if (emailAlreadyExists) {
-        throw new bad_request_1.BadRequestError("Email already exists");
+        throw new errors_1.BadRequestError("Email already exists");
     }
     //first registered user is an admin
     const isFirstAccount = (yield User_1.default.countDocuments({})) === 0;
     const role = isFirstAccount ? "admin" : "user";
     const user = yield User_1.default.create({ name, email, password, role });
-    const tokenUser = { name: user.name, userId: user._id, role: user.role };
+    const tokenUser = (0, utils_1.createTokenUser)(user);
     (0, utils_1.attachCookiesToResponse)({ res, user: tokenUser });
+    res.status(http_status_codes_1.StatusCodes.CREATED).json({ user: tokenUser });
 });
 exports.register = register;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     if (!email || !password) {
-        throw new bad_request_1.BadRequestError("Please provide email and passwrod");
+        throw new errors_1.BadRequestError("Please provide email and passwrod");
     }
     const user = yield User_1.default.findOne({ email });
     if (!user) {
@@ -45,8 +45,9 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!isPasswordCorrect) {
         throw new errors_1.UnauthenticatedError("Invalid Credentials");
     }
-    const tokenUser = { name: user.name, userId: user._id, role: user.role };
+    const tokenUser = (0, utils_1.createTokenUser)(user);
     (0, utils_1.attachCookiesToResponse)({ res, user: tokenUser });
+    res.status(http_status_codes_1.StatusCodes.OK).json({ user: tokenUser });
 });
 exports.login = login;
 const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

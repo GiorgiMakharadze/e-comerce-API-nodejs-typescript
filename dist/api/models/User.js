@@ -67,6 +67,10 @@ const UserSchema = new mongoose_1.Schema({
 });
 UserSchema.pre("save", function () {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log(this.modifiedPaths());
+        console.log(this.isModified("name"));
+        if (!this.isModified("password"))
+            return;
         const salt = yield bcryptjs_1.default.genSalt(10);
         this.password = yield bcryptjs_1.default.hash(this.password, salt);
     });

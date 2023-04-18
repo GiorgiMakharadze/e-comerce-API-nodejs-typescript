@@ -30,6 +30,5 @@ export const errorHandlerMiddleware = (
     customError.msg = `No item found with id: ${err.value}`;
     customError.statusCode = 404;
   }
-
   return res.status(customError.statusCode).json({ msg: customError.msg });
 };

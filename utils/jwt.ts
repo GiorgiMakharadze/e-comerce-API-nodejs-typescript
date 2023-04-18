@@ -1,6 +1,5 @@
 import { Response } from "express";
 import jwt from "jsonwebtoken";
-import { StatusCodes } from "http-status-codes";
 
 export const createJWT = ({
   payload,
@@ -34,6 +33,4 @@ export const attachCookiesToResponse = ({
     secure: process.env.NODE_ENV === "production",
     signed: true,
   });
-
-  res.status(StatusCodes.CREATED).json({ user });
 };

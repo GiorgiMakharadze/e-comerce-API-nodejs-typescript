@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import { StatusCodes } from "http-status-codes";
-import { BadRequestError } from "../errors/bad-request";
-import { attachCookiesToResponse } from "../../utils";
-import { UnauthenticatedError } from "../errors";
+import { attachCookiesToResponse, createTokenUser } from "../../utils";
+import { UnauthenticatedError, BadRequestError } from "../errors";
 
 export const register = async (req: Request, res: Response) => {
   const { email, name, password } = req.body;
@@ -17,8 +16,9 @@ export const register = async (req: Request, res: Response) => {
   const isFirstAccount = (await User.countDocuments({})) === 0;
   const role = isFirstAccount ? "admin" : "user";
   const user = await User.create({ name, email, password, role });
-  const tokenUser = { name: user.name, userId: user._id, role: user.role };
+  const tokenUser = createTokenUser(user);
   attachCookiesToResponse({ res, user: tokenUser });
+  res.status(StatusCodes.CREATED).json({ user: tokenUser });
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -36,8 +36,10 @@ export const login = async (req: Request, res: Response) => {
   if (!isPasswordCorrect) {
     throw new UnauthenticatedError("Invalid Credentials");
   }
-  const tokenUser = { name: user.name, userId: user._id, role: user.role };
+  const tokenUser = createTokenUser(user);
   attachCookiesToResponse({ res, user: tokenUser });
+
+  res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 
 export const logout = async (req: Request, res: Response) => {
@@ -45,5 +47,6 @@ export const logout = async (req: Request, res: Response) => {
     httpOnly: true,
     expires: new Date(Date.now()),
   });
+
   res.status(StatusCodes.OK).json({ msg: "user logged out" });
 };

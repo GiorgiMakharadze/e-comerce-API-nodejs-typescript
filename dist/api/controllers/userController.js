@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUserPassword = exports.updateUser = exports.showCurrentUser = exports.getSingleUser = exports.getAllUsers = void 0;
 const http_status_codes_1 = require("http-status-codes");
 const User_1 = __importDefault(require("../models/User"));
+const utils_1 = require("../../utils");
 const errors_1 = require("../errors");
 const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield User_1.default.find({ role: "user" }).select("-password");
@@ -34,10 +35,43 @@ const showCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.showCurrentUser = showCurrentUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("update  users");
+    var _a;
+    const { email, name } = req.body;
+    if (!email || !name) {
+        throw new errors_1.BadRequestError("Please provide all values");
+    }
+    const user = yield User_1.default.findOne({ _id: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId });
+    if (user) {
+        user.email = email;
+        user.name = name;
+        yield user.save();
+    }
+    if (!user) {
+        throw new errors_1.NotFoundError("User not found");
+    }
+    const tokenUser = (0, utils_1.createTokenUser)(user);
+    (0, utils_1.attachCookiesToResponse)({ res, user: tokenUser });
+    res.status(http_status_codes_1.StatusCodes.OK).json({ user: tokenUser });
 });
 exports.updateUser = updateUser;
 const updateUserPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("update User Password");
+    var _b;
+    const { oldPassword, newPassword } = req.body;
+    if (!oldPassword || !newPassword) {
+        throw new errors_1.BadRequestError("Please provide both values");
+    }
+    if (oldPassword === newPassword) {
+        throw new errors_1.BadRequestError("New password cannot be the same as old password");
+    }
+    const user = yield User_1.default.findOne({ _id: (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId });
+    const isPasswordCorrect = yield (user === null || user === void 0 ? void 0 : user.comparePassword(oldPassword));
+    if (!isPasswordCorrect) {
+        throw new errors_1.UnauthenticatedError("Invalid Credentials");
+    }
+    if (user) {
+        user.password = newPassword;
+        yield user.save();
+    }
+    res.status(http_status_codes_1.StatusCodes.OK).json({ msg: "Password updated" });
 });
 exports.updateUserPassword = updateUserPassword;
