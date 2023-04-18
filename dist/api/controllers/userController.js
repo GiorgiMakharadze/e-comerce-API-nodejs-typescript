@@ -27,6 +27,7 @@ const getSingleUser = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     if (!user) {
         throw new errors_1.NotFoundError(`No user with id: ${req.params.id}`);
     }
+    (0, utils_1.checkPremissions)(req.user, user._id);
     res.status(http_status_codes_1.StatusCodes.OK).json({ user });
 });
 exports.getSingleUser = getSingleUser;
