@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import User from "../models/User";
+import { RequestWithUser } from "../../types/authMiddlewareTypes";
 import { NotFoundError } from "../errors";
 
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -14,8 +15,8 @@ export const getSingleUser = async (req: Request, res: Response) => {
   }
   res.status(StatusCodes.OK).json({ user });
 };
-export const showCurrentUser = async (req: Request, res: Response) => {
-  res.send("show current users");
+export const showCurrentUser = async (req: RequestWithUser, res: Response) => {
+  res.status(StatusCodes.OK).json({ user: req.user });
 };
 export const updateUser = async (req: Request, res: Response) => {
   res.send("update  users");

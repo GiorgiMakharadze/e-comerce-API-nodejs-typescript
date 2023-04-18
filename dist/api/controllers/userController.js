@@ -30,7 +30,7 @@ const getSingleUser = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.getSingleUser = getSingleUser;
 const showCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("show current users");
+    res.status(http_status_codes_1.StatusCodes.OK).json({ user: req.user });
 });
 exports.showCurrentUser = showCurrentUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
