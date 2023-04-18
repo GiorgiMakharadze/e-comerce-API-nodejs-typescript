@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadImage = exports.deleteProduct = exports.updateProduct = exports.getSingleProduct = exports.getAllProducts = exports.createProduct = void 0;
+const path_1 = __importDefault(require("path"));
 const http_status_codes_1 = require("http-status-codes");
 const Product_1 = __importDefault(require("../models/Product"));
 const errors_1 = require("../errors");
@@ -60,6 +61,20 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.deleteProduct = deleteProduct;
 const uploadImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("upload product");
+    var _b;
+    if (!req.files) {
+        throw new errors_1.BadRequestError("No File Uploaded");
+    }
+    const productImage = (_b = req.files) === null || _b === void 0 ? void 0 : _b.image;
+    if (!productImage.mimetype.startsWith("image")) {
+        throw new errors_1.BadRequestError("Please Upload Image");
+    }
+    const maxSize = parseInt(process.env.IMAGE_MAX_SIZE);
+    if (productImage.size > maxSize) {
+        throw new errors_1.BadRequestError(`Please Upload Image smaller then ${maxSize} KB`);
+    }
+    const imagePath = path_1.default.join(__dirname, "../../../public/uploads/." + `${productImage.name}`);
+    yield productImage.mv(imagePath);
+    res.status(http_status_codes_1.StatusCodes.OK).json({ image: `/uploads/${productImage.name}` });
 });
 exports.uploadImage = uploadImage;

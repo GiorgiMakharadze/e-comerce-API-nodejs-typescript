@@ -86,4 +86,4 @@ const ProductSchema = new mongoose_1.Schema({
         required: true,
     },
 }, { timestamps: true });
-exports.default = mongoose_1.default.model("Price", ProductSchema);
+exports.default = mongoose_1.default.model("Product", ProductSchema);
