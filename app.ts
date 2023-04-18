@@ -8,6 +8,7 @@ import { notFound } from "./api/middleware/not-found";
 import { errorHandlerMiddleware } from "./api/middleware/error-handler";
 import authRouter from "./api/routes/authRoutes";
 import userRoutes from "./api/routes/userRoutes";
+import productRoutes from "./api/routes/productRoutes";
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -29,6 +30,7 @@ app.get("/api/v1", (req: Request, res: Response) => {
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/products", productRoutes);
 
 //error handler middlewares
 app.use(notFound);

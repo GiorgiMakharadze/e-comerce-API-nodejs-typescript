@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { IProductSchema } from "../../types/productModelSchemaTypes";
 
-const ProductsSchema = new Schema<IProductSchema>(
+const ProductSchema = new Schema<IProductSchema>(
   {
     name: {
       type: String,
@@ -14,7 +14,7 @@ const ProductsSchema = new Schema<IProductSchema>(
       required: [true, "Please provide product price"],
       default: 0,
     },
-    desctiprion: {
+    description: {
       type: String,
       required: [true, "Please provide product description"],
       maxlength: [1000, "Description can not be more than 1000 characters"],
@@ -38,8 +38,8 @@ const ProductsSchema = new Schema<IProductSchema>(
     },
     colors: {
       type: [String],
+      default: ["#222"],
       required: [true, "Please provide color"],
-      enum: ["office", "kitchen", "bedroom"],
     },
     featured: {
       type: Boolean,
@@ -67,4 +67,4 @@ const ProductsSchema = new Schema<IProductSchema>(
   { timestamps: true }
 );
 
-export default mongoose.model<IProductSchema>("Price", ProductsSchema);
+export default mongoose.model<IProductSchema>("Price", ProductSchema);

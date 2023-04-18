@@ -20,7 +20,7 @@ router
   .get(getAllProducts);
 
 router
-  .route("/upoadImage")
+  .route("/uploadImage")
   .post([authenticateUser, authorizePremmisions("admin")], uploadImage);
 
 router

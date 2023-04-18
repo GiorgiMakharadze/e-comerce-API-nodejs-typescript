@@ -4,7 +4,7 @@ export interface IProductSchema extends Document {
   _id: string;
   name: string;
   price: Number;
-  desctiprion: string;
+  description: string;
   image: string;
   category: string;
   company: string;
