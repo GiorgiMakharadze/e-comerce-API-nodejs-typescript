@@ -6,15 +6,16 @@ import {
   updateUser,
   updateUserPassword,
 } from "../controllers/userController";
+import { authenticateUser } from "../middleware/authentication";
 
 const router = Router();
 
-router.route("/").get(getAllUsers);
+router.route("/").get(authenticateUser, getAllUsers);
 
 router.route("/showMe").get(showCurrentUser);
 router.route("/updateUser").patch(updateUser);
 router.route("/updateUserPassword").patch(updateUserPassword);
 
-router.route("/:id").get(getSingleUser);
+router.route("/:id").get(authenticateUser, getSingleUser);
 
 export default router;
