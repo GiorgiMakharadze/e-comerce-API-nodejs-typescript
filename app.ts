@@ -43,10 +43,6 @@ app.use(express.static("./public"));
 app.use(fileUpload());
 
 //routes
-app.get("/", (req: Request, res: Response) => {
-  res.send("e-comerce-api");
-});
-
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/products", productRoutes);

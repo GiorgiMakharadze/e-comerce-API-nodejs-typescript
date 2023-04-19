@@ -18,6 +18,11 @@ require("express-async-errors");
 const morgan_1 = __importDefault(require("morgan"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
+const helmet_1 = __importDefault(require("helmet"));
+const xss_clean_1 = __importDefault(require("xss-clean"));
+const cors_1 = __importDefault(require("cors"));
+const express_mongo_sanitize_1 = __importDefault(require("express-mongo-sanitize"));
 const connect_1 = require("./api/db/connect");
 const not_found_1 = require("./api/middleware/not-found");
 const error_handler_1 = require("./api/middleware/error-handler");
@@ -28,6 +33,16 @@ const reviewRoutes_1 = __importDefault(require("./api/routes/reviewRoutes"));
 const orderRoutes_1 = __importDefault(require("./api/routes/orderRoutes"));
 const port = process.env.PORT || 5000;
 const app = (0, express_1.default)();
+//security
+app.set("trust proxy", 1);
+app.use((0, express_rate_limit_1.default)({
+    windowMs: 15 * 60 * 1000,
+    max: 60,
+}));
+app.use((0, helmet_1.default)());
+app.use((0, cors_1.default)());
+app.use((0, xss_clean_1.default)());
+app.use((0, express_mongo_sanitize_1.default)());
 //middlewares
 app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.json());
@@ -35,14 +50,6 @@ app.use((0, cookie_parser_1.default)(process.env.JWT_SECRET));
 app.use(express_1.default.static("./public"));
 app.use((0, express_fileupload_1.default)());
 //routes
-app.get("/", (req, res) => {
-    res.send("e-comerce-api");
-});
-//test route
-app.get("/api/v1", (req, res) => {
-    console.log(req.signedCookies);
-    res.send("e-comerce-api");
-});
 app.use("/api/v1/auth", authRoutes_1.default);
 app.use("/api/v1/users", userRoutes_1.default);
 app.use("/api/v1/products", productRoutes_1.default);
