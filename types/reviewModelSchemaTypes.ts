@@ -5,7 +5,7 @@ export interface IReviewSchema extends Document {
   rating: number;
   title: string;
   comment: string;
-  user?: Types.ObjectId;
+  user?: string;
   product?: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;

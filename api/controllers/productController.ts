@@ -41,6 +41,7 @@ export const updateProduct = async (req: Request, res: Response) => {
 
   res.status(StatusCodes.OK).json({ product });
 };
+
 export const deleteProduct = async (req: Request, res: Response) => {
   const { id: productId } = req.params;
 
@@ -53,6 +54,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
 
   res.status(StatusCodes.OK).json({ msg: " Product Removed" });
 };
+
 export const uploadImage = async (req: Request, res: Response) => {
   if (!req.files) {
     throw new BadRequestError("No File Uploaded");
