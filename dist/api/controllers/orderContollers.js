@@ -16,6 +16,7 @@ exports.updateOrder = exports.getCurrentUserOrders = exports.getSingleOrder = ex
 const http_status_codes_1 = require("http-status-codes");
 const Order_1 = __importDefault(require("../models/Order"));
 const Product_1 = __importDefault(require("../models/Product"));
+const utils_1 = require("../../utils");
 const errors_1 = require("../errors");
 const fakeStripeAPI = ({ amount, currency, }) => __awaiter(void 0, void 0, void 0, function* () {
     const client_secret = "someRandomValue";
@@ -69,18 +70,39 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.createOrder = createOrder;
 const getAllOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("getAllOrders");
+    const orders = yield Order_1.default.find({});
+    res.status(http_status_codes_1.StatusCodes.OK).json({ orders, count: orders.length });
 });
 exports.getAllOrders = getAllOrders;
 const getSingleOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("getSingleOrder");
+    const { id: orderId } = req.params;
+    const order = yield Order_1.default.findOne({ _id: orderId });
+    if (!order) {
+        throw new errors_1.BadRequestError(`No order with id: ${orderId}`);
+    }
+    (0, utils_1.checkPremissions)(req.user, order.user);
+    res.status(http_status_codes_1.StatusCodes.OK).json({ order });
 });
 exports.getSingleOrder = getSingleOrder;
 const getCurrentUserOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("getCurrentUserOrders");
+    var _b;
+    const orders = yield Order_1.default.find({ user: (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId });
+    res.status(http_status_codes_1.StatusCodes.OK).json({ orders, count: orders.length });
 });
 exports.getCurrentUserOrders = getCurrentUserOrders;
 const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("updateOrder");
+    const { id: orderId } = req.params;
+    const { paymentIntentId } = req.body;
+    const order = yield Order_1.default.findOne({ _id: orderId });
+    if (!order) {
+        throw new errors_1.BadRequestError(`No order with id: ${orderId}`);
+    }
+    if (order.user) {
+        (0, utils_1.checkPremissions)(req.user, order.user);
+    }
+    order.paymentIntentId = paymentIntentId;
+    order.status = "paid";
+    yield order.save();
+    res.status(http_status_codes_1.StatusCodes.OK).json({ order });
 });
 exports.updateOrder = updateOrder;

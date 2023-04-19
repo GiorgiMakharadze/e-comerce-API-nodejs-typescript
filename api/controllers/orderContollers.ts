@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import Order from "../models/Order";
 import Product from "../models/Product";
+import { checkPremissions } from "../../utils";
 import { BadRequestError } from "../errors";
 import { RequestWithUser } from "../../types/authMiddlewareTypes";
 import { IProductSchema } from "../../types/productModelSchemaTypes";
@@ -72,14 +73,44 @@ export const createOrder = async (req: RequestWithUser, res: Response) => {
 };
 
 export const getAllOrders = async (req: Request, res: Response) => {
-  res.send("getAllOrders");
+  const orders = await Order.find({});
+
+  res.status(StatusCodes.OK).json({ orders, count: orders.length });
 };
-export const getSingleOrder = async (req: Request, res: Response) => {
-  res.send("getSingleOrder");
+
+export const getSingleOrder = async (req: RequestWithUser, res: Response) => {
+  const { id: orderId } = req.params;
+  const order = await Order.findOne({ _id: orderId });
+  if (!order) {
+    throw new BadRequestError(`No order with id: ${orderId}`);
+  }
+  checkPremissions(req.user, order.user);
+  res.status(StatusCodes.OK).json({ order });
 };
-export const getCurrentUserOrders = async (req: Request, res: Response) => {
-  res.send("getCurrentUserOrders");
+
+export const getCurrentUserOrders = async (
+  req: RequestWithUser,
+  res: Response
+) => {
+  const orders = await Order.find({ user: req.user?.userId });
+  res.status(StatusCodes.OK).json({ orders, count: orders.length });
 };
-export const updateOrder = async (req: Request, res: Response) => {
-  res.send("updateOrder");
+
+export const updateOrder = async (req: RequestWithUser, res: Response) => {
+  const { id: orderId } = req.params;
+  const { paymentIntentId } = req.body;
+
+  const order = await Order.findOne({ _id: orderId });
+  if (!order) {
+    throw new BadRequestError(`No order with id: ${orderId}`);
+  }
+
+  if (order.user) {
+    checkPremissions(req.user, order.user);
+  }
+  order.paymentIntentId = paymentIntentId;
+  order.status = "paid";
+  await order.save();
+
+  res.status(StatusCodes.OK).json({ order });
 };
