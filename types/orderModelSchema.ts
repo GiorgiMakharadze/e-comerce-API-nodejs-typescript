@@ -6,14 +6,15 @@ export interface IOrderSchema extends Document {
   subtotal: number;
   total: number;
   shippingFee: number;
-  cartItems: any[];
+  orderItems: any[];
   status: string;
   user?: Types.ObjectId;
   clientSecret: string;
   paymentIntentId: string;
 }
 
-export interface ISingleCartItemSchema extends Document {
+export interface IOrderItemSchema extends Document {
+  _id: string;
   name: string;
   image: string;
   price: number;

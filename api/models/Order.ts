@@ -1,10 +1,7 @@
 import mongoose, { Schema } from "mongoose";
-import {
-  IOrderSchema,
-  ISingleCartItemSchema,
-} from "../../types/orderModelSchema";
+import { IOrderSchema, IOrderItemSchema } from "../../types/orderModelSchema";
 
-const SingleCartItemSchema = new Schema<ISingleCartItemSchema>({
+const SingleOrdertItemSchema = new Schema<IOrderItemSchema>({
   name: {
     type: String,
     required: true,
@@ -46,7 +43,7 @@ const OrderSchema = new Schema<IOrderSchema>(
       type: Number,
       required: true,
     },
-    cartItems: [SingleCartItemSchema],
+    orderItems: [SingleOrdertItemSchema],
     status: {
       type: String,
       enum: ["pending", "failed", "paid", "delivered", "canceled"],
@@ -63,7 +60,6 @@ const OrderSchema = new Schema<IOrderSchema>(
     },
     paymentIntentId: {
       type: String,
-      required: true,
     },
   },
   { timestamps: true }

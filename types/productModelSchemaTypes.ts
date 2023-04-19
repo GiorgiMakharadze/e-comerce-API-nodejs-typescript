@@ -3,7 +3,7 @@ import { Document, Types } from "mongoose";
 export interface IProductSchema extends Document {
   _id: string;
   name: string;
-  price: Number;
+  price: number;
   description: string;
   image: string;
   category: string;
