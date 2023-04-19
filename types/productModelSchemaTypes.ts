@@ -13,6 +13,7 @@ export interface IProductSchema extends Document {
   freeShipping: boolean;
   inventory: Number;
   averageRating: Number;
+  numOfReviews: Number;
   user?: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
