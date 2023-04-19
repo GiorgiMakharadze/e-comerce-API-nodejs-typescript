@@ -23,7 +23,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (emailAlreadyExists) {
         throw new errors_1.BadRequestError("Email already exists");
     }
-    //first registered user is an admin
+    //first registered user is an admin!
     const isFirstAccount = (yield User_1.default.countDocuments({})) === 0;
     const role = isFirstAccount ? "admin" : "user";
     const user = yield User_1.default.create({ name, email, password, role });
