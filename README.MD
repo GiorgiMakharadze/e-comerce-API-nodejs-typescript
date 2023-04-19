@@ -22,8 +22,6 @@ JWT_LIFETIME=
 IMAGE_MAX_SIZE=
 ```
 
-Then run npm start
-
 Mongo uri example:
 
 ```bash
