@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const ProductSchema = new mongoose_1.Schema({
@@ -85,5 +94,16 @@ const ProductSchema = new mongoose_1.Schema({
         ref: "User",
         required: true,
     },
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
+ProductSchema.virtual("reviews", {
+    ref: "Review",
+    localField: "_id",
+    foreignField: "product",
+    justOne: false,
+});
+ProductSchema.pre("remove", function () {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield this.model("Review").deleteMany({ product: this._id });
+    });
+});
 exports.default = mongoose_1.default.model("Product", ProductSchema);

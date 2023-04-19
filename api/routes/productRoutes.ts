@@ -11,6 +11,7 @@ import {
   authenticateUser,
   authorizePremmisions,
 } from "../middleware/authentication";
+import { getSingleProductReviews } from "../controllers/reviewController";
 
 const router = Router();
 
@@ -27,5 +28,9 @@ router
   .route("/:id")
   .get(getSingleProduct)
   .patch([authenticateUser, authorizePremmisions("admin")], updateProduct)
+
   .delete([authenticateUser, authorizePremmisions("admin")], deleteProduct);
+
+router.route("/:id/reviews").get(getSingleProductReviews);
+
 export default router;

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteReview = exports.updateReview = exports.getSingleReview = exports.getAllReviews = exports.createReview = void 0;
+exports.getSingleProductReviews = exports.deleteReview = exports.updateReview = exports.getSingleReview = exports.getAllReviews = exports.createReview = void 0;
 const http_status_codes_1 = require("http-status-codes");
 const Review_1 = __importDefault(require("../models/Review"));
 const Product_1 = __importDefault(require("../models/Product"));
@@ -38,7 +38,10 @@ const createReview = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.createReview = createReview;
 const getAllReviews = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const reviews = yield Review_1.default.find({});
+    const reviews = yield Review_1.default.find({}).populate({
+        path: "product",
+        select: "name company price",
+    });
     res.status(http_status_codes_1.StatusCodes.OK).json({ reviews, count: reviews.length });
 });
 exports.getAllReviews = getAllReviews;
@@ -81,3 +84,9 @@ const deleteReview = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     res.status(http_status_codes_1.StatusCodes.OK).json({ msg: "Review Removed" });
 });
 exports.deleteReview = deleteReview;
+const getSingleProductReviews = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id: productId } = req.params;
+    const reviews = yield Review_1.default.find({ product: productId });
+    res.status(http_status_codes_1.StatusCodes.OK).json({ reviews, cound: reviews.length });
+});
+exports.getSingleProductReviews = getSingleProductReviews;

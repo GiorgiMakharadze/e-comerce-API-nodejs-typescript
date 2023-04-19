@@ -31,7 +31,7 @@ const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.getAllProducts = getAllProducts;
 const getSingleProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id: productId } = req.params;
-    const product = yield Product_1.default.findOne({ _id: productId });
+    const product = yield Product_1.default.findOne({ _id: productId }).populate("reviews");
     if (!product) {
         throw new errors_1.NotFoundError(`No product with id: ${productId}`);
     }
