@@ -24,6 +24,7 @@ const error_handler_1 = require("./api/middleware/error-handler");
 const authRoutes_1 = __importDefault(require("./api/routes/authRoutes"));
 const userRoutes_1 = __importDefault(require("./api/routes/userRoutes"));
 const productRoutes_1 = __importDefault(require("./api/routes/productRoutes"));
+const reviewRoutes_1 = __importDefault(require("./api/routes/reviewRoutes"));
 const port = process.env.PORT || 5000;
 const app = (0, express_1.default)();
 //middlewares
@@ -44,6 +45,7 @@ app.get("/api/v1", (req, res) => {
 app.use("/api/v1/auth", authRoutes_1.default);
 app.use("/api/v1/users", userRoutes_1.default);
 app.use("/api/v1/products", productRoutes_1.default);
+app.use("/api/v1/reviews", reviewRoutes_1.default);
 //error handler middlewares
 app.use(not_found_1.notFound);
 app.use(error_handler_1.errorHandlerMiddleware);
