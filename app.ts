@@ -11,6 +11,7 @@ import authRouter from "./api/routes/authRoutes";
 import userRoutes from "./api/routes/userRoutes";
 import productRoutes from "./api/routes/productRoutes";
 import reviewRoutes from "./api/routes/reviewRoutes";
+import orderRoutes from "./api/routes/orderRoutes";
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -37,6 +38,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
+app.use("/api/v1/orders", orderRoutes);
 
 //error handler middlewares
 app.use(notFound);
